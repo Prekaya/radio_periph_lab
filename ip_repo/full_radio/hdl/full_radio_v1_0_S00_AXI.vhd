@@ -119,16 +119,18 @@ architecture arch_imp of full_radio_v1_0_S00_AXI is
 	signal byte_index	: integer;
 	signal aw_en	: std_logic;
 
-COMPONENT dds_compiler_0
-  PORT (
-    aclk : IN STD_LOGIC;
-    aresetn : IN STD_LOGIC;
-    s_axis_phase_tvalid : IN STD_LOGIC;
-    s_axis_phase_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-    m_axis_data_tvalid : OUT STD_LOGIC;
-    m_axis_data_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
-  );
-    END COMPONENT;
+    
+    COMPONENT radiocore_0 IS
+    PORT (
+      aclk : IN STD_LOGIC;
+      adc_pinc : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+      aresetn : IN STD_LOGIC;
+      m_axis_data_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+      m_axis_data_tvalid : OUT STD_LOGIC;
+      timer_counter : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+      tuner_pinc : IN STD_LOGIC_VECTOR(31 DOWNTO 0)
+    );
+  END COMPONENT radiocore_0;
 
 begin
 	-- I/O Connections assignments
@@ -229,7 +231,6 @@ begin
 	      slv_reg0 <= (others => '0');
 	      slv_reg1 <= (others => '0');
 	      slv_reg2 <= (others => '0');
-	      slv_reg3 <= (others => '0');
 	    else
 	      loc_addr := axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	      if (slv_reg_wren = '1') then
@@ -263,14 +264,12 @@ begin
 	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
 	                -- Respective byte enables are asserted as per write strobes                   
 	                -- slave registor 3
-	                slv_reg3(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
 	              end if;
 	            end loop;
 	          when others =>
 	            slv_reg0 <= slv_reg0;
 	            slv_reg1 <= slv_reg1;
 	            slv_reg2 <= slv_reg2;
-	            slv_reg3 <= slv_reg3;
 	        end case;
 	      end if;
 	    end if;
@@ -367,7 +366,7 @@ begin
 	      when b"00" =>
 	        reg_data_out <= slv_reg0;
 	      when b"01" =>
-	        reg_data_out <= x"DEADBEEF";
+	        reg_data_out <= slv_reg1;
 	      when b"10" =>
 	        reg_data_out <= slv_reg2;
 	      when b"11" =>
@@ -398,15 +397,17 @@ begin
 
 	-- Add user logic here
 
-your_instance_name : dds_compiler_0
-  PORT MAP (
-    aclk => s_axi_aclk,
-    aresetn => '1',
-    s_axis_phase_tvalid => '1',
-    s_axis_phase_tdata => slv_reg0,
-    m_axis_data_tvalid => m_axis_tvalid,
-    m_axis_data_tdata => m_axis_tdata
-  );
+  
+    U0 : radiocore_0
+    PORT MAP (
+      aclk => s_axi_aclk,
+      adc_pinc => slv_reg0,
+      tuner_pinc => slv_reg1,
+      aresetn => slv_reg2(0),
+      timer_counter => slv_reg3,
+      m_axis_data_tdata => m_axis_tdata,
+      m_axis_data_tvalid => m_axis_tvalid
+    );
 
 
 	-- User logic ends
