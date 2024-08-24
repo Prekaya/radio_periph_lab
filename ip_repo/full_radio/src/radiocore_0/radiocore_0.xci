@@ -4,7 +4,7 @@
     "xci_name": "radiocore_0",
     "component_reference": "xilinx.com:user:radiocore:1.0",
     "ip_revision": "2",
-    "gen_directory": ".",
+    "gen_directory": "../../../../../../../../../users/nana/documents/en742projects/finallab/vivado/radio_periph_lab.tmp/full_radio_v1_0_project/full_radio_v1_0_project.gen/sources_1/ip/radiocore_0",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "radiocore_0", "resolve_type": "user", "usage": "all" } ]
@@ -26,11 +26,11 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "2" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "." } ],
+        "OUTPUTDIR": [ { "value": "../../../../../../../../../users/nana/documents/en742projects/finallab/vivado/radio_periph_lab.tmp/full_radio_v1_0_project/full_radio_v1_0_project.gen/sources_1/ip/radiocore_0" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2023.2.2" } ],
-        "SYNTHESISFLOW": [ { "value": "OUT_OF_CONTEXT" } ]
+        "SYNTHESISFLOW": [ { "value": "GLOBAL" } ]
       }
     },
     "boundary": {
